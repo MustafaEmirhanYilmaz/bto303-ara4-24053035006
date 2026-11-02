@@ -1,0 +1,11 @@
+# Dependencies
+node_modules/
+
+# SQLite WAL & SHM files
+*.sqlite-wal
+*.sqlite-shm
+
+# OS & Environment
+.DS_Store
+.env
+.env.local
