@@ -1,0 +1,19 @@
+{
+  "name": "bto303-ara4-dashboard",
+  "version": "1.0.0",
+  "description": "BTÖ-303 Ara Uygulama 4 - E-Ticaret Veri Seti Analitik ve Karar Destek Paneli",
+  "main": "server/server.js",
+  "scripts": {
+    "start": "node server/server.js",
+    "test": "node test/verify_analytics.js"
+  },
+  "keywords": [
+    "bto303",
+    "analytics",
+    "ecommerce",
+    "dashboard",
+    "sqlite"
+  ],
+  "author": "Mustafa Emirhan Yılmaz (24053035006)",
+  "license": "ISC"
+}

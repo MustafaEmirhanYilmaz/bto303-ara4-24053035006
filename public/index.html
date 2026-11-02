@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="tr" class="h-full bg-slate-50">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BTÖ-303 Ara Uygulama 4 | E-Ticaret Analitik ve Karar Destek Paneli</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              200: '#c7d2fe',
+              300: '#a5b4fc',
+              400: '#818cf8',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+              800: '#3730a3',
+              900: '#312e81',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Chart.js & Leaflet -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="h-full flex flex-col font-sans text-slate-800 antialiased selection:bg-brand-500 selection:text-white">
+
+  <!-- Main Layout Wrapper -->
+  <div class="flex h-screen overflow-hidden">
+    
+    <!-- Sidebar -->
+    <aside class="w-64 bg-slate-900 text-slate-300 flex flex-col flex-shrink-0 border-r border-slate-800 select-none">
+      <!-- App Brand -->
+      <div class="p-5 flex items-center gap-3 border-b border-slate-800">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-400 flex items-center justify-center text-white shadow-lg shadow-brand-500/30">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+          </svg>
+        </div>
+        <div>
+          <h1 class="font-bold text-white text-base leading-tight">BTÖ-303 Analitik</h1>
+          <p class="text-xs text-slate-400 font-medium">Ara Uygulama 4 Paneli</p>
+        </div>
+      </div>
+
+      <!-- Navigation Links -->
+      <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+        <div class="px-3 pb-2 text-[11px] font-semibold tracking-wider text-slate-400 uppercase">Analiz Modülleri</div>
+        
+        <button onclick="navigateTo('overview')" id="nav-overview" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors text-white bg-brand-600 shadow-sm shadow-brand-600/30">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+          Genel Bakış
+        </button>
+
+        <button onclick="navigateTo('categories')" id="nav-categories" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors text-slate-300 hover:text-white hover:bg-slate-800">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
+          Kategori & Ürünler
+        </button>
+
+        <button onclick="navigateTo('customers')" id="nav-customers" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors text-slate-300 hover:text-white hover:bg-slate-800">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+          Müşteri & Coğrafya
+        </button>
+
+        <button onclick="navigateTo('funnel')" id="nav-funnel" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors text-slate-300 hover:text-white hover:bg-slate-800">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
+          Dönüşüm Hunisi
+        </button>
+
+        <button onclick="navigateTo('logistics')" id="nav-logistics" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors text-slate-300 hover:text-white hover:bg-slate-800">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0"></path></svg>
+          Lojistik & İptal / İade
+        </button>
+
+        <button onclick="navigateTo('coupons')" id="nav-coupons" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors text-slate-300 hover:text-white hover:bg-slate-800">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path></svg>
+          Kupon & Kampanya
+        </button>
+
+        <div class="pt-4 px-3 pb-2 text-[11px] font-semibold tracking-wider text-slate-400 uppercase">Sorgulama</div>
+
+        <button onclick="navigateTo('sql')" id="nav-sql" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors text-slate-300 hover:text-white hover:bg-slate-800">
+          <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
+          Canlı SQL Stüdyosu
+        </button>
+      </nav>
+
+      <!-- Sidebar Footer -->
+      <div class="p-4 border-t border-slate-800 bg-slate-950/50 text-xs text-slate-400 space-y-1">
+        <div class="flex items-center justify-between text-slate-300 font-medium">
+          <span>Veri Seti Kapsamı</span>
+          <span class="text-emerald-400 flex items-center gap-1">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> 134k Satır
+          </span>
+        </div>
+        <p class="text-[11px] text-slate-400">1 Oca 2025 – 31 Eki 2026</p>
+        <p class="text-[11px] text-slate-400">Dr. Mertcan Ünal / BTÖ-303</p>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="flex-1 flex flex-col overflow-hidden">
+      
+      <!-- Top Header Bar -->
+      <header class="h-16 bg-white border-b border-slate-200 px-6 flex items-center justify-between shadow-xs z-10 flex-shrink-0">
+        <div class="flex items-center gap-4">
+          <h2 id="page-title" class="text-lg font-bold text-slate-800">Yönetim ve Genel Bakış</h2>
+          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-700 border border-slate-200">
+            SQLite 3 Canlı Bağlantı
+          </span>
+        </div>
+
+        <!-- Header Actions -->
+        <div class="flex items-center gap-3">
+          <!-- Quick Export Dropdown -->
+          <div class="relative inline-block text-left">
+            <button onclick="toggleExportMenu()" class="inline-flex items-center gap-2 px-3 py-2 text-xs font-semibold rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-300 transition-colors">
+              <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+              CSV İndir
+            </button>
+            <div id="export-menu" class="hidden absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-slate-100 focus:outline-none z-50">
+              <div class="py-1">
+                <a href="/api/export/categories" class="block px-4 py-2 text-xs text-slate-700 hover:bg-slate-100">Kategori Satışları (CSV)</a>
+                <a href="/api/export/cities" class="block px-4 py-2 text-xs text-slate-700 hover:bg-slate-100">İl Bazlı Siparişler (CSV)</a>
+                <a href="/api/export/products" class="block px-4 py-2 text-xs text-slate-700 hover:bg-slate-100">En Çok Satanlar (CSV)</a>
+              </div>
+            </div>
+          </div>
+
+          <a href="#guide-modal" onclick="openGuideModal()" class="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-lg bg-brand-50 text-brand-700 hover:bg-brand-100 border border-brand-200 transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            Rehber ve Formüller
+          </a>
+        </div>
+      </header>
+
+      <!-- Scrollable Main View Container -->
+      <main class="flex-1 overflow-y-auto p-6 bg-slate-50">
+        
+        <!-- SECTION 1: OVERVIEW -->
+        <div id="view-overview" class="space-y-6">
+          <!-- Top Metric Cards -->
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5" id="overview-kpis">
+            <div class="p-5 bg-white rounded-xl border border-slate-200 shadow-xs flex flex-col justify-between">
+              <div class="flex items-center justify-between text-slate-500 text-xs font-medium">
+                <span>BRÜT CİRO (KDV DAHİL)</span>
+                <span class="p-2 rounded-lg bg-emerald-50 text-emerald-600">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                </span>
+              </div>
+              <div class="mt-3">
+                <div class="text-2xl font-bold text-slate-900" id="kpi-gross-revenue">-</div>
+                <div class="text-xs text-slate-500 mt-1 flex items-center gap-1">
+                  Net Ciro: <span class="font-semibold text-slate-700" id="kpi-net-revenue">-</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="p-5 bg-white rounded-xl border border-slate-200 shadow-xs flex flex-col justify-between">
+              <div class="flex items-center justify-between text-slate-500 text-xs font-medium">
+                <span>TOPLAM SİPARİŞ</span>
+                <span class="p-2 rounded-lg bg-blue-50 text-blue-600">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
+                </span>
+              </div>
+              <div class="mt-3">
+                <div class="text-2xl font-bold text-slate-900" id="kpi-total-orders">-</div>
+                <div class="text-xs text-slate-500 mt-1 flex items-center gap-1">
+                  <span class="text-emerald-600 font-medium" id="kpi-delivered-orders">-</span> teslim / <span class="text-rose-500 font-medium" id="kpi-cancelled-orders">-</span> iptal (<span id="kpi-cancellation-rate">-</span>%)
+                </div>
+              </div>
+            </div>
+
+            <div class="p-5 bg-white rounded-xl border border-slate-200 shadow-xs flex flex-col justify-between">
+              <div class="flex items-center justify-between text-slate-500 text-xs font-medium">
+                <span>BRÜT KÂR & MARJ</span>
+                <span class="p-2 rounded-lg bg-indigo-50 text-indigo-600">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                </span>
+              </div>
+              <div class="mt-3">
+                <div class="text-2xl font-bold text-slate-900" id="kpi-gross-profit">-</div>
+                <div class="text-xs text-slate-500 mt-1">
+                  Kâr Marjı: <span class="font-semibold text-emerald-600" id="kpi-profit-margin">-%</span> (KDV Hariç Maliyet Karşılaştırmalı)
+                </div>
+              </div>
+            </div>
+
+            <div class="p-5 bg-white rounded-xl border border-slate-200 shadow-xs flex flex-col justify-between">
+              <div class="flex items-center justify-between text-slate-500 text-xs font-medium">
+                <span>ORTALAMA SEPET & İADE</span>
+                <span class="p-2 rounded-lg bg-amber-50 text-amber-600">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
+                </span>
+              </div>
+              <div class="mt-3">
+                <div class="text-2xl font-bold text-slate-900" id="kpi-aov">-</div>
+                <div class="text-xs text-slate-500 mt-1">
+                  İade Oranı: <span class="font-semibold text-rose-600" id="kpi-return-rate">-%</span> (<span id="kpi-return-amount">-</span>)
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Charts Row 1: Monthly Trend -->
+          <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-xs">
+            <div class="flex items-center justify-between mb-4">
+              <div>
+                <h3 class="font-bold text-slate-900 text-base">Aylık Ciro ve Sipariş Trendi</h3>
+                <p class="text-xs text-slate-500">1 Ocak 2025 – 31 Ekim 2026 dönemi aylık satış ve brüt kâr gelişimi</p>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="inline-flex items-center gap-1.5 text-xs text-slate-600">
+                  <span class="w-3 h-3 rounded bg-brand-500"></span> Ciro (TL)
+                </span>
+                <span class="inline-flex items-center gap-1.5 text-xs text-slate-600 ml-3">
+                  <span class="w-3 h-3 rounded bg-emerald-500"></span> Brüt Kâr (TL)
+                </span>
+              </div>
+            </div>
+            <div class="h-80">
+              <canvas id="chart-monthly-trend"></canvas>
+            </div>
+          </div>
+
+          <!-- Charts Row 2: Platforms & Payment Methods -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-xs">
+              <h3 class="font-bold text-slate-900 text-base mb-1">Platform Dağılımı</h3>
+              <p class="text-xs text-slate-500 mb-4">Siparişlerin verildiği ortamlar (Web, Android, iOS, Mobil Web)</p>
+              <div class="h-64 flex items-center justify-center">
+                <canvas id="chart-platforms"></canvas>
+              </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-xs">
+              <h3 class="font-bold text-slate-900 text-base mb-1">Ödeme Yöntemleri</h3>
+              <p class="text-xs text-slate-500 mb-4">Kredi Kartı, Banka Kartı, Havale, Dijital Cüzdan, Kapıda Ödeme</p>
+              <div class="h-64 flex items-center justify-center">
+                <canvas id="chart-payments"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 2: CATEGORIES & PRODUCTS -->
+        <div id="view-categories" class="hidden space-y-6">
+          <!-- Main Categories Guide Query 1 Table & Chart -->
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="lg:col-span-2 bg-white p-6 rounded-xl border border-slate-200 shadow-xs">
+              <div class="flex items-center justify-between mb-4">
+                <div>
+                  <h3 class="font-bold text-slate-900 text-base">Ana Kategoriye Göre Ciro ve Kârlılık</h3>
+                  <p class="text-xs text-slate-500">Rehber Örnek Sorgu 1: İptaller hariç ciro, kâr ve indirim oranları</p>
+                </div>
+                <a href="/api/export/categories" class="text-xs text-brand-600 hover:text-brand-700 font-semibold">CSV İndir &rarr;</a>
+              </div>
+              <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs border-collapse">
+                  <thead>
+                    <tr class="bg-slate-50 text-slate-600 border-b border-slate-200 font-semibold">
+                      <th class="py-3 px-4">Ana Kategori</th>
+                      <th class="py-3 px-3 text-right">Ciro (TL)</th>
+                      <th class="py-3 px-3 text-right">Satılan Adet</th>
+                      <th class="py-3 px-3 text-right">Ort. İndirim</th>
+                      <th class="py-3 px-3 text-right">Brüt Kâr (TL)</th>
+                      <th class="py-3 px-3 text-right">Kâr Marjı</th>
+                    </tr>
+                  </thead>
+                  <tbody id="table-main-categories" class="divide-y divide-slate-100">
+                    <!-- Populated by JS -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-xs flex flex-col justify-between">
+              <h3 class="font-bold text-slate-900 text-base mb-2">Kategori Ciro Payı</h3>
+              <div class="h-64 flex items-center justify-center">
+                <canvas id="chart-category-pie"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- Top Products: Revenue, Volume & Return Risks -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-xs">
+              <h3 class="font-bold text-slate-900 text-base mb-1">En Çok Ciro Getiren 10 Ürün</h3>
+              <p class="text-xs text-slate-500 mb-4">Katalogdaki en yüksek toplam satış hacmine sahip ürünler</p>
+              <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs border-collapse">
+                  <thead>
+                    <tr class="bg-slate-50 text-slate-600 border-b border-slate-200 font-semibold">
+                      <th class="py-2.5 px-3">Ürün Adı</th>
+                      <th class="py-2.5 px-2">Kategori</th>
+                      <th class="py-2.5 px-2 text-right">Adet</th>
+                      <th class="py-2.5 px-3 text-right">Ciro (TL)</th>
+                    </tr>
+                  </thead>
+                  <tbody id="table-top-products-rev" class="divide-y divide-slate-100">
+                    <!-- Populated by JS -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-xs">
+              <h3 class="font-bold text-slate-900 text-base mb-1">İade Oranı En Yüksek Ürünler</h3>
+              <p class="text-xs text-slate-500 mb-4">Satış adedine oranla en fazla iade talebi alan riskli ürünler</p>
+              <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs border-collapse">
+                  <thead>
+                    <tr class="bg-slate-50 text-slate-600 border-b border-slate-200 font-semibold">
+                      <th class="py-2.5 px-3">Ürün Adı</th>
+                      <th class="py-2.5 px-2 text-right">Satış</th>
+                      <th class="py-2.5 px-2 text-right">İade</th>
+                      <th class="py-2.5 px-2 text-right">İade Oranı</th>
+                      <th class="py-2.5 px-3 text-right">İade Tutarı</th>
+                    </tr>
+                  </thead>
+                  <tbody id="table-return-risks" class="divide-y divide-slate-100">
+                    <!-- Populated by JS -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 3: CUSTOMERS & GEOGRAPHICS -->
+        <div id="view-customers" class="hidden space-y-6">
+          <!-- Turkey Interactive Map & City Stats (Guide Query 2) -->
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="lg:col-span-2 bg-white p-6 rounded-xl border border-slate-200 shadow-xs flex flex-col">
+              <div class="flex items-center justify-between mb-3">
+                <div>
+                  <h3 class="font-bold text-slate-900 text-base">İl Bazlı Sipariş ve Ciro Haritası (25 İl)</h3>
+                  <p class="text-xs text-slate-500">Rehber Örnek Sorgu 2: İller tablosundaki koordinatlarla dinamik coğrafi analiz</p>
+                </div>
+                <span class="text-xs text-slate-400">Haritada noktalara tıklayarak detayları görün</span>
+              </div>
+              <div id="turkey-map" class="h-96 rounded-lg border border-slate-200 z-0"></div>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-xs flex flex-col justify-between">
+              <h3 class="font-bold text-slate-900 text-base mb-1">En Çok Sipariş Alan İlk 5 İl</h3>
+              <p class="text-xs text-slate-500 mb-3">Rehber Sorgu 2 LIMIT 5 çıktısı</p>
+              <div class="overflow-x-auto flex-1">
+                <table class="w-full text-left text-xs border-collapse">
+                  <thead>
+                    <tr class="bg-slate-50 text-slate-600 border-b border-slate-200 font-semibold">
+                      <th class="py-2.5 px-3">İl</th>
+                      <th class="py-2.5 px-2 text-right">Sipariş</th>
+                      <th class="py-2.5 px-3 text-right">Ort. Sepet</th>
+                    </tr>
+                  </thead>
+                  <tbody id="table-top5-cities" class="divide-y divide-slate-100">
+                    <!-- Populated by JS -->
+                  </tbody>
+                </table>
+              </div>
+              <div class="mt-4 pt-3 border-t border-slate-100">
+                <h4 class="text-xs font-semibold text-slate-700 mb-2">Bölgesel Ciro Dağılımı</h4>
+                <div class="h-44">
+                  <canvas id="chart-regions"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Demographics: Age, Gender, Channels, Premium -->
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-xs">
+              <h4 class="font-bold text-slate-900 text-sm mb-1">Yaş Grupları</h4>
+              <p class="text-[11px] text-slate-500 mb-3">137 eksik doğum yılı rehberde belirtildiği gibi gruplanmıştır</p>
+              <div class="h-48">
+                <canvas id="chart-age"></canvas>
+              </div>
+            </div>
+
+            <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-xs">
+              <h4 class="font-bold text-slate-900 text-sm mb-1">Cinsiyet Kırılımı</h4>
+              <p class="text-[11px] text-slate-500 mb-3">Kadın (K) vs Erkek (E) müşteri cirosu</p>
+              <div class="h-48 flex items-center justify-center">
+                <canvas id="chart-gender"></canvas>
+              </div>
+            </div>
+
+            <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-xs">
+              <h4 class="font-bold text-slate-900 text-sm mb-1">Kayıt Kanalları</h4>
+              <p class="text-[11px] text-slate-500 mb-3">Organik arama, reklam, sosyal medya vb.</p>
+              <div class="h-48">
+                <canvas id="chart-channels"></canvas>
+              </div>
+            </div>
+
+            <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-xs">
+              <h4 class="font-bold text-slate-900 text-sm mb-1">Premium Üyelik Etkisi</h4>
+              <p class="text-[11px] text-slate-500 mb-3">Premium üyeler kargo ücreti ödemez</p>
+              <div class="space-y-3 pt-2" id="premium-stats-box">
+                <!-- Populated by JS -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 4: CONVERSION FUNNEL -->
+        <div id="view-funnel" class="hidden space-y-6">
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Main Funnel Visual -->
+            <div class="lg:col-span-2 bg-white p-6 rounded-xl border border-slate-200 shadow-xs">
+              <div class="flex items-center justify-between mb-4">
+                <div>
+                  <h3 class="font-bold text-slate-900 text-base">E-Ticaret Dönüşüm Hunisi (Conversion Funnel)</h3>
+                  <p class="text-xs text-slate-500">105.136 olay verisi üzerinden oturum bazında adım adım dönüşüm</p>
+                </div>
+                <span class="text-xs px-2.5 py-1 bg-brand-50 text-brand-700 rounded-full font-medium">
+                  29.382 Toplam Oturum
+                </span>
+              </div>
+              <div class="space-y-4 pt-2" id="funnel-bars-container">
+                <!-- Interactive Funnel Bars generated by JS -->
+              </div>
+            </div>
+
+            <!-- Device & Traffic Conversion -->
+            <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-xs flex flex-col justify-between">
+              <div>
+                <h3 class="font-bold text-slate-900 text-base mb-1">Cihaz Bazında Dönüşüm</h3>
+                <p class="text-xs text-slate-500 mb-4">Mobil, Masaüstü ve Tablet satın alma oranları</p>
+                <div class="h-44">
+                  <canvas id="chart-device-funnel"></canvas>
+                </div>
+              </div>
+
+              <div class="mt-6 pt-4 border-t border-slate-100">
+                <h4 class="text-xs font-semibold text-slate-800 mb-2">Ziyaretçi Tipi</h4>
+                <div class="text-xs text-slate-600 space-y-1.5" id="visitor-types-box">
+                  <!-- Populated by JS -->
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Product Events (Guide Query 3) -->
+          <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-xs">
+            <div class="flex items-center justify-between mb-4">
+              <div>
+                <h3 class="font-bold text-slate-900 text-base">Ürün Başına Olay Sayıları (Görüntüleme, Sepet, Satın Alma)</h3>
+                <p class="text-xs text-slate-500">Rehber Örnek Sorgu 3: Koşullu sayma (SUM CASE) ile ürün olayları ve dönüşüm oranı</p>
+              </div>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs border-collapse">
+                <thead>
+                  <tr class="bg-slate-50 text-slate-600 border-b border-slate-200 font-semibold">
+                    <th class="py-3 px-3">Ürün Adı</th>
+                    <th class="py-3 px-2">Marka</th>
+                    <th class="py-3 px-2 text-right">Görüntüleme</th>
+                    <th class="py-3 px-2 text-right">Sepete Ekleme</th>
+                    <th class="py-3 px-2 text-right">Satın Alma</th>
+                    <th class="py-3 px-3 text-right">Görüntüleme &rarr; Satış Oranı</th>
+                  </tr>
+                </thead>
+                <tbody id="table-product-events" class="divide-y divide-slate-100">
+                  <!-- Populated by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 5: LOGISTICS, CANCELLATIONS & RETURNS -->
+        <div id="view-logistics" class="hidden space-y-6">
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Order Statuses -->
+            <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-xs">
+              <h3 class="font-bold text-slate-900 text-base mb-1">Sipariş Durum Dağılımı</h3>
+              <p class="text-xs text-slate-500 mb-4">Teslim Edildi, İptal, Kargoda, Hazırlanıyor</p>
+              <div class="h-60 flex items-center justify-center">
+                <canvas id="chart-order-statuses"></canvas>
+              </div>
+            </div>
+
+            <!-- Cancellation Reasons -->
+            <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-xs">
+              <h3 class="font-bold text-slate-900 text-base mb-1">İptal Nedenleri</h3>
+              <p class="text-xs text-slate-500 mb-4">324 iptal siparişin gerekçeleri ve kayıp ciro</p>
+              <div class="h-60 flex items-center justify-center">
+                <canvas id="chart-cancellation-reasons"></canvas>
+              </div>
+            </div>
+
+            <!-- Return Reasons -->
+            <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-xs">
+              <h3 class="font-bold text-slate-900 text-base mb-1">İade Nedenleri</h3>
+              <p class="text-xs text-slate-500 mb-4">Beden uymadı, hasarlı ürün, vazgeçtim vb.</p>
+              <div class="h-60 flex items-center justify-center">
+                <canvas id="chart-return-reasons"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- Couriers Performance Table -->
+          <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-xs">
+            <h3 class="font-bold text-slate-900 text-base mb-1">Kargo Firmaları Performans Kıyaslaması</h3>
+            <p class="text-xs text-slate-500 mb-4">Yıldız Kargo, Anadolu Kargo, Ekspres Kargo ve Marmara Lojistik ortalama teslimat ve kargoya verme günleri</p>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs border-collapse">
+                <thead>
+                  <tr class="bg-slate-50 text-slate-600 border-b border-slate-200 font-semibold">
+                    <th class="py-3 px-3">Kargo Firması</th>
+                    <th class="py-3 px-2 text-right">Taşınan Sipariş</th>
+                    <th class="py-3 px-2 text-right">Ort. Kargoya Veriliş (Gün)</th>
+                    <th class="py-3 px-2 text-right">Ort. Teslimat Süresi (Gün)</th>
+                    <th class="py-3 px-2 text-right">İptal Sayısı</th>
+                    <th class="py-3 px-3 text-right">İade Talebi Sayısı</th>
+                  </tr>
+                </thead>
+                <tbody id="table-couriers" class="divide-y divide-slate-100">
+                  <!-- Populated by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 6: COUPONS & CAMPAIGNS -->
+        <div id="view-coupons" class="hidden space-y-6">
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Coupon Comparison Card -->
+            <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-xs flex flex-col justify-between">
+              <div>
+                <h3 class="font-bold text-slate-900 text-base mb-1">Kupon Kullanımının Sepete Etkisi</h3>
+                <p class="text-xs text-slate-500 mb-4">Kupon kullanılan siparişler ile kuponsuz siparişlerin sepet ortalaması (AOV)</p>
+                <div class="space-y-4 pt-2" id="coupon-comparison-box">
+                  <!-- Populated by JS -->
+                </div>
+              </div>
+              <div class="pt-4 border-t border-slate-100 text-xs text-slate-500">
+                <span class="font-medium text-slate-700">Not:</span> Rehber uyarınca 6.251 siparişte kupon kullanılmamıştır.
+              </div>
+            </div>
+
+            <!-- 15 Coupons Table -->
+            <div class="lg:col-span-2 bg-white p-6 rounded-xl border border-slate-200 shadow-xs">
+              <h3 class="font-bold text-slate-900 text-base mb-1">15 Kampanya Kuponunun Detaylı Performansı</h3>
+              <p class="text-xs text-slate-500 mb-4">İndirim tipi, kullanım adedi, oluşturduğu ciro ve sağlanan indirim toplamı</p>
+              <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs border-collapse">
+                  <thead>
+                    <tr class="bg-slate-50 text-slate-600 border-b border-slate-200 font-semibold">
+                      <th class="py-2.5 px-3">Kupon Kodu</th>
+                      <th class="py-2.5 px-2">Açıklama</th>
+                      <th class="py-2.5 px-2">Tip / Değer</th>
+                      <th class="py-2.5 px-2 text-right">Kullanım</th>
+                      <th class="py-2.5 px-2 text-right">Top. İndirim</th>
+                      <th class="py-2.5 px-3 text-right">Oluşan Ciro</th>
+                    </tr>
+                  </thead>
+                  <tbody id="table-coupons-list" class="divide-y divide-slate-100">
+                    <!-- Populated by JS -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 7: INTERACTIVE SQL QUERY STUDIO -->
+        <div id="view-sql" class="hidden space-y-6">
+          <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-xs">
+            <div class="flex items-center justify-between mb-3">
+              <div>
+                <h3 class="font-bold text-slate-900 text-base">Canlı SQL Sorgu Stüdyosu</h3>
+                <p class="text-xs text-slate-500">Doğrudan SQLite veritabanına bağlanıp rehberdeki sorguları veya dilediğiniz SELECT sorgusunu çalıştırın</p>
+              </div>
+              <div class="flex items-center gap-2">
+                <button onclick="loadSampleQuery(1)" class="px-2.5 py-1 text-xs font-medium rounded bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors">
+                  Rehber Sorgu 1 (Kategori Ciro)
+                </button>
+                <button onclick="loadSampleQuery(2)" class="px-2.5 py-1 text-xs font-medium rounded bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors">
+                  Rehber Sorgu 2 (İl Sipariş)
+                </button>
+                <button onclick="loadSampleQuery(3)" class="px-2.5 py-1 text-xs font-medium rounded bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors">
+                  Rehber Sorgu 3 (Ürün Olayları)
+                </button>
+              </div>
+            </div>
+
+            <!-- SQL Editor Box -->
+            <div class="relative">
+              <textarea id="sql-input" rows="6" class="w-full font-mono text-xs p-3.5 bg-slate-900 text-emerald-400 rounded-lg border border-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500" spellcheck="false" placeholder="SELECT * FROM kategoriler LIMIT 10;"></textarea>
+            </div>
+
+            <div class="flex items-center justify-between mt-3">
+              <div class="text-xs text-slate-500" id="query-meta-info">
+                Hazır. Sorgunuzu yazıp 'Çalıştır' butonuna basın.
+              </div>
+              <div class="flex items-center gap-2">
+                <button onclick="executeSqlQuery()" class="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-white bg-brand-600 hover:bg-brand-700 rounded-lg shadow-sm shadow-brand-600/30 transition-colors">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                  Sorguyu Çalıştır (F5)
+                </button>
+              </div>
+            </div>
+
+            <!-- Query Error Message Box -->
+            <div id="query-error" class="hidden mt-3 p-3 bg-rose-50 border border-rose-200 rounded-lg text-xs text-rose-700 font-mono"></div>
+
+            <!-- Query Results Table -->
+            <div class="mt-4 pt-4 border-t border-slate-200">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-semibold text-slate-700">Sonuç Tablosu</span>
+                <span id="results-count-badge" class="text-xs text-slate-400">0 satır</span>
+              </div>
+              <div class="max-h-96 overflow-auto border border-slate-200 rounded-lg">
+                <table class="w-full text-left text-xs border-collapse" id="query-results-table">
+                  <thead class="bg-slate-100 text-slate-700 sticky top-0" id="query-table-head">
+                    <tr><th class="py-2.5 px-3">Henüz sorgu çalıştırılmadı</th></tr>
+                  </thead>
+                  <tbody class="divide-y divide-slate-100 bg-white" id="query-table-body">
+                    <tr><td class="py-4 px-3 text-slate-400 text-center">Yukarıdaki butonlardan bir sorgu seçin veya SQL yazıp Çalıştır'a tıklayın.</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- Guide & Formulas Modal -->
+  <div id="guide-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-2xl w-full p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-200">
+        <h3 class="text-base font-bold text-slate-900">BTÖ-303 E-Ticaret Veri Seti Hesaplama Kuralları</h3>
+        <button onclick="closeGuideModal()" class="text-slate-400 hover:text-slate-600">&times;</button>
+      </div>
+      <div class="py-4 text-xs text-slate-600 space-y-3 leading-relaxed">
+        <p class="font-medium text-slate-800">Veri Seti Rehberinde (12 Sayfa) Belirtilen Resmî Hesaplama Formülleri:</p>
+        <ul class="list-disc pl-5 space-y-1.5 font-mono text-slate-700 bg-slate-50 p-3 rounded-lg border border-slate-200">
+          <li><strong>birim_satis_fiyati</strong> = birim_liste_fiyati &times; (1 - indirim_orani)</li>
+          <li><strong>kalem_tutari</strong> = adet &times; birim_satis_fiyati</li>
+          <li><strong>ara_toplam</strong> = &sum; kalem_tutari</li>
+          <li><strong>toplam_tutar</strong> = ara_toplam - kupon_indirimi + kargo_ucreti</li>
+          <li><strong>KDV Hariç Tutar</strong> = tutar &divide; (1 + kdv_orani / 100)</li>
+          <li><strong>birim_maliyet</strong> KDV hariçtir; brüt kâr = (KDV hariç satış) - (adet &times; birim_maliyet)</li>
+        </ul>
+        <h4 class="font-bold text-slate-800 pt-2">Veri Seti Durum Kuralları:</h4>
+        <ul class="list-disc pl-5 space-y-1">
+          <li><strong>İptal Siparişler:</strong> Kalemler tabloda durur; kargo ve teslim tarihi boştur; iade ve yorum içermez.</li>
+          <li><strong>İade Koşulu:</strong> İade yalnızca teslim edilmiş siparişlerde vardır ve teslimattan sonra talep edilir.</li>
+          <li><strong>Hazırlanıyor & Kargoda:</strong> Veri kapanış tarihi (31 Ekim 2026) civarındaki güncel siparişlerdir.</li>
+        </ul>
+      </div>
+      <div class="pt-3 border-t border-slate-200 text-right">
+        <button onclick="closeGuideModal()" class="px-4 py-2 text-xs font-semibold text-white bg-slate-800 hover:bg-slate-900 rounded-lg">Kapat</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/app.js"></script>
+</body>
+</html>
